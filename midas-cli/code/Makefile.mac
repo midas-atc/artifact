@@ -1,0 +1,33 @@
+NAME := midas-sdk/cli
+ARTIFACTS := \
+		bin/midas
+
+GOBIN := ${GOPATH}/src/midas-sdk/cli/bin
+
+INSTALL_BIN := ${GOBIN}/midas
+
+.PHONY : install build clean
+
+build : ${ARTIFACTS}
+
+${ARTIFACTS} : main.go
+		mkdir -p bin
+		go build -i -o bin/midas midas-sdk/cli
+
+${INSTALL_BIN} : ${ARTIFACTS}
+
+install : ${INSTALL_BIN}
+		cp ${INSTALL_BIN} ${GOPATH}/bin/
+
+# uninstall : 
+# 		rm -f ${INSTALL_BIN}
+
+clean :
+		rm -rf bin
+		rm -f ${GOPATH}/bin/midas
+
+		cd ${GOPATH}/src/midas-sdk/example && \
+		for x in MXNet PyTorch TensorFlow helloworld; do \
+			rm -rf "$$x"/configurations; \
+			rm -f "$$x"/run.sh; \
+		done
